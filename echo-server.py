@@ -1,18 +1,16 @@
-# echo-server.py
+from socket import socket, gethostbyname, AF_INET, SOCK_DGRAM
+import sys
+PORT_NUMBER = 5000
+SIZE = 1024
 
-import socket
+hostName = gethostbyname( '0.0.0.0' )
 
-HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
-PORT = 8080  # Port to listen on (non-privileged ports are > 1023)
+mySocket = socket( AF_INET, SOCK_DGRAM )
+mySocket.bind( (hostName, PORT_NUMBER) )
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    s.listen()
-    conn, addr = s.accept()
-    with conn:
-        print(f"Connected by {addr}")
-        while True:
-            data = conn.recv(1024)
-            if not data:
-                break
-            conn.sendall(data)
+print ("Test server listening on port {0}\n".format(PORT_NUMBER))
+
+while True:
+    (data,addr) = mySocket.recvfrom(SIZE)
+    print(data)
+sys.exit()
